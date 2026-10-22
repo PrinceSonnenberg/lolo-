@@ -1,0 +1,6 @@
+{
+  "name": "Lofi Code Radio",
+  "description": "An aesthetic, cozy Lofi Code Radio featuring ambient animated visuals, live Chillify music streams, soundscapes, and focus tools.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
