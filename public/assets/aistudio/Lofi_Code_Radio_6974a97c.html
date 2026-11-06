@@ -15,9 +15,9 @@
       --ink: #f7efe4;
       --mute: #cfc4dc;
       --accent: #ffb892;
-      --glass: rgba(28, 22, 44, 0.65);
-      --glass-hover: rgba(40, 32, 60, 0.85);
-      --border: rgba(255, 255, 255, 0.12);
+      --glass: rgba(22, 16, 36, 0.40);
+      --glass-hover: rgba(36, 28, 56, 0.58);
+      --border: rgba(255, 255, 255, 0.13);
       color-scheme: dark;
     }
 
@@ -147,51 +147,85 @@
 
     .floating-emoji {
       position: absolute;
-      bottom: 80px;
+      bottom: calc(140px + env(safe-area-inset-bottom, 0px));
       font-size: 28px;
       user-select: none;
       pointer-events: none;
-      animation: floatUpAndDrift 2.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-      filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.4));
+      animation: floatUpAndDrift 2.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+      filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.45));
     }
 
     @keyframes floatUpAndDrift {
       0% {
-        transform: translateY(0) scale(0.5) rotate(0deg);
+        transform: translateY(0) scale(0.6) rotate(0deg);
         opacity: 0;
       }
-      15% {
+      12% {
         opacity: 1;
-        transform: translateY(-35px) scale(1.15) rotate(-6deg);
+        transform: translateY(-30px) scale(1.18) rotate(-6deg);
       }
       75% {
         opacity: 0.95;
       }
       100% {
-        transform: translateY(-280px) scale(1.4) rotate(10deg);
+        transform: translateY(-360px) scale(1.45) rotate(12deg);
         opacity: 0;
       }
+    }
+
+    /* Embedded vibes shelf inside the player dock (Centrally Positioned) */
+    .vibes-shelf {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 10px;
+      padding-top: 9px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .vibes-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #ffb892;
+      cursor: pointer;
+      user-select: none;
+      transition: color 0.18s ease, transform 0.18s ease;
+      letter-spacing: 0.2px;
+    }
+
+    .vibes-label:hover {
+      color: #ffd6b8;
+      transform: translateY(-1px);
+    }
+
+    .vibes-sparkle {
+      font-size: 13px;
     }
 
     .reaction-bar {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
     }
 
     .reaction-btn {
       background: none;
       border: 0;
-      font-size: 15px;
+      font-size: 16px;
       cursor: pointer;
-      padding: 2px 5px;
+      padding: 3px 6px;
       border-radius: 8px;
-      transition: transform 0.18s ease, filter 0.18s ease;
+      transition: transform 0.18s ease, filter 0.18s ease, background 0.18s ease;
       line-height: 1;
     }
 
     .reaction-btn:hover {
-      transform: scale(1.35) translateY(-2px);
+      transform: scale(1.32) translateY(-2px);
+      background: rgba(255, 255, 255, 0.08);
       filter: drop-shadow(0 2px 6px rgba(255, 184, 146, 0.6));
     }
 
@@ -229,21 +263,21 @@
     }
 
     /* ==========================================================================
-       MARK: - Main Music Player Bar
+       MARK: - Main Music Player Bar (Translucent Glass Finish)
        ========================================================================== */
     .player {
       position: fixed;
       left: 50%;
       bottom: calc(16px + env(safe-area-inset-bottom, 0px));
       transform: translateX(-50%);
-      width: min(560px, calc(100vw - 28px));
-      background: var(--glass);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 12px 16px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      width: min(580px, calc(100vw - 28px));
+      background: rgba(22, 16, 36, 0.38);
+      backdrop-filter: blur(24px) saturate(140%);
+      -webkit-backdrop-filter: blur(24px) saturate(140%);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 22px;
+      padding: 13px 18px 12px;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.12);
       z-index: 10;
     }
 
@@ -454,9 +488,10 @@
     }
 
     @media (max-width: 520px) {
-      .vol, .visitor-pill { display: none; }
+      .vol { display: none; }
       .title { font-size: 14px; }
       .player { width: calc(100vw - 20px); padding: 10px 12px; }
+      .vibes-shelf { gap: 10px; }
     }
   </style>
 </head>
@@ -483,34 +518,15 @@
   <div class="shade"></div>
 
   <!-- ========================================================================
-       MARK: - Top Header Navigation & Good Vibes Reactions
+       MARK: - Top Header Navigation
        ======================================================================== -->
   <header class="top">
     <div class="brand"><b>&lt;/&gt;</b> Lofi Code Radio</div>
     <div class="header-actions">
-      <!-- Live Visitor Counter Badge -->
-      <div class="pill visitor-pill" title="Active Visitors and Listeners">
-        <span style="font-size: 13px;">👥</span>
-        <span id="visitor-count">1,482 listening</span>
-      </div>
-
-      <!-- Good Vibes Floating Reaction Bar -->
-      <div class="pill interactive" id="vibe-pill" title="Send a cozy vibe to fellow listeners">
-        <span class="reaction-bar">
-          <button class="reaction-btn" data-emoji="☕" title="Send Coffee Vibe">☕</button>
-          <button class="reaction-btn" data-emoji="✨" title="Send Magic Sparkles">✨</button>
-          <button class="reaction-btn" data-emoji="🎧" title="Send Music Vibe">🎧</button>
-          <button class="reaction-btn" data-emoji="💻" title="Send Coding Vibe">💻</button>
-          <button class="reaction-btn" data-emoji="❤️" title="Send Cozy Heart">❤️</button>
-          <button class="reaction-btn" data-emoji="🌧️" title="Send Rainy Mood">🌧️</button>
-        </span>
-        <span id="vibe-count-label" style="font-weight: 700; color: #ffb892; font-size: 12px; margin-left: 2px;">Send Vibe</span>
-      </div>
-
-      <!-- Genre Selection -->
-      <label class="pill">
+      <!-- Live Stream Station / Genre Selector (Single Live Indicator) -->
+      <label class="pill" title="Live Broadcast Station">
         <span class="live"></span>
-        <select id="genre" aria-label="Genre"></select>
+        <select id="genre" aria-label="Live Broadcast Genre"></select>
       </label>
     </div>
   </header>
@@ -518,7 +534,7 @@
   <div class="note" id="note">Click Play to start Lo-Fi Radio</div>
 
   <!-- ========================================================================
-       MARK: - Player Dock
+       MARK: - Player Dock (Translucent Glass & Integrated Vibes Shelf)
        ======================================================================== -->
   <main class="player" id="player">
     <div class="row">
@@ -543,6 +559,25 @@
       <span id="t1">3:12</span>
       <button class="btn" id="hbtn">History</button>
     </div>
+
+    <!-- ======================================================================
+         MARK: - Integrated Send Vibes Bar Inside Player Dock
+         ====================================================================== -->
+    <div class="vibes-shelf" id="vibe-shelf">
+      <span class="vibes-label" id="vibe-label" title="Send a cozy random vibe">
+        <span class="vibes-sparkle">✨</span>
+        <span id="vibe-count-label">Send vibes</span>
+      </span>
+      <div class="reaction-bar" title="Choose a cozy vibe to float across the room">
+        <button class="reaction-btn" data-emoji="☕" title="Send Coffee Vibe">☕</button>
+        <button class="reaction-btn" data-emoji="✨" title="Send Sparkle Vibe">✨</button>
+        <button class="reaction-btn" data-emoji="🎧" title="Send Music Vibe">🎧</button>
+        <button class="reaction-btn" data-emoji="💻" title="Send Coding Vibe">💻</button>
+        <button class="reaction-btn" data-emoji="❤️" title="Send Cozy Heart">❤️</button>
+        <button class="reaction-btn" data-emoji="🌧️" title="Send Rainy Mood">🌧️</button>
+      </div>
+    </div>
+
     <ul class="hist" id="hist"></ul>
   </main>
 
@@ -575,105 +610,187 @@
 
 
     // ==========================================================================
-    // MARK: - Visitor & Live Listener Counter
+    // MARK: - Real-Time Multi-User Vibe Synchronization (WebSocket & HTTP Fallback)
     // ==========================================================================
-    (function initVisitorCounter() {
-      const STORAGE_KEY = 'lofi_visitor_stats';
-      let stats;
-      try {
-        stats = JSON.parse(localStorage.getItem(STORAGE_KEY));
-      } catch (e) {
-        stats = null;
-      }
-      if (!stats || typeof stats.totalVisits !== 'number') {
-        stats = {
-          totalVisits: 1480 + Math.floor(Math.random() * 20),
-          lastVisitTime: Date.now()
-        };
-      }
-      stats.totalVisits += 1;
-      stats.lastVisitTime = Date.now();
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(stats));
-      } catch (e) {}
-
-      const counterElement = $('visitor-count');
-      if (counterElement) {
-        const baseListeners = Math.max(120, Math.floor(stats.totalVisits * 0.32));
-        counterElement.textContent = `${baseListeners.toLocaleString()} listening`;
-
-        setInterval(() => {
-          const delta = (Math.random() > 0.48 ? 1 : -1) * Math.floor(Math.random() * 3);
-          const current = Math.max(80, baseListeners + delta);
-          counterElement.textContent = `${current.toLocaleString()} listening`;
-        }, 12000);
-      }
-    })();
-
-    // ==========================================================================
-    // MARK: - Floating Reactions & Good Vibes System
-    // ==========================================================================
-    (function initGoodVibesSystem() {
-      const VIBE_STORAGE_KEY = 'lofi_vibes_total';
+    (function initRealTimeMultiUserVibesSystem() {
       const containerElement = $('floating-emojis-container');
-      const vibeLabelElement = $('vibe-count-label');
-
-      // Retrieve persistent vibe count or initialize baseline
-      let totalVibesSent = parseInt(localStorage.getItem(VIBE_STORAGE_KEY) || '342', 10);
-
-      function updateVibeLabelDisplay() {
-        if (vibeLabelElement) {
-          vibeLabelElement.textContent = `✨ ${totalVibesSent.toLocaleString()} Vibes`;
-        }
-      }
+      const processedVibeEventIds = new Set();
 
       /**
-       * Spawns an animated floating emoji across the room view.
-       * @param {string} emojiSymbol - The emoji character to render.
-       * @param {number} startXPercent - Starting horizontal X coordinate percentage (10% to 90%).
+       * Persistent client identity across browser sessions for deduplication.
        */
-      function spawnFloatingEmoji(emojiSymbol, startXPercent) {
+      const localClientUuid = (function resolveLocalClientUuid() {
+        try {
+          let storedId = localStorage.getItem('lofi_client_uuid');
+          if (!storedId) {
+            storedId = crypto.randomUUID();
+            localStorage.setItem('lofi_client_uuid', storedId);
+          }
+          return storedId;
+        } catch (storageError) {
+          return crypto.randomUUID();
+        }
+      })();
+
+      /**
+       * Spawns an animated floating emoji across the ambient visual room.
+       * @param {string} emojiSymbol - The emoji character to render.
+       * @param {number} horizontalPositionPercent - Starting horizontal X coordinate percentage.
+       */
+      function spawnFloatingEmoji(emojiSymbol, horizontalPositionPercent) {
         if (!containerElement) return;
 
         const emojiNode = document.createElement('span');
         emojiNode.className = 'floating-emoji';
         emojiNode.textContent = emojiSymbol;
 
-        const initialX = typeof startXPercent === 'number' ? startXPercent : 15 + Math.random() * 70;
+        const initialX = typeof horizontalPositionPercent === 'number'
+          ? Math.max(5, Math.min(95, horizontalPositionPercent))
+          : 50;
         emojiNode.style.left = `${initialX}%`;
         emojiNode.style.fontSize = `${24 + Math.floor(Math.random() * 12)}px`;
 
         containerElement.appendChild(emojiNode);
 
-        // Remove element once CSS keyframe animation completes
+        // Remove DOM node once CSS keyframe animation completes
         setTimeout(() => {
           if (emojiNode.parentNode) {
             emojiNode.parentNode.removeChild(emojiNode);
           }
-        }, 2600);
+        }, 2800);
       }
 
       /**
-       * Triggers a Good Vibe reaction event from local user or remote ambient listener.
-       * @param {string} emojiSymbol - The emoji reaction symbol.
-       * @param {boolean} isLocalUser - Whether triggered directly by current user.
+       * Triggers a burst of mood reaction emojis across the screen for local action.
+       * @param {string} emojiSymbol - The selected emoji character.
+       * @param {number} originHorizontalPercent - The horizontal origin percentage.
        */
-      function sendGoodVibe(emojiSymbol, isLocalUser = true) {
-        totalVibesSent += 1;
+      function triggerLocalMoodReaction(emojiSymbol, originHorizontalPercent) {
+        const centerPercent = typeof originHorizontalPercent === 'number'
+          ? originHorizontalPercent
+          : 50;
+
+        // Optimistic visual burst rising from above the player dock
+        spawnFloatingEmoji(emojiSymbol, centerPercent);
+        setTimeout(() => spawnFloatingEmoji(emojiSymbol, centerPercent + (Math.random() * 10 - 5)), 150);
+        setTimeout(() => spawnFloatingEmoji(emojiSymbol, centerPercent + (Math.random() * 14 - 7)), 300);
+        say(`Cozy ${emojiSymbol} vibe sent ✨`);
+      }
+
+      /**
+       * Displays a burst of mood emojis received from another real listener somewhere in the world.
+       * @param {string} emojiSymbol - The remote listener's emoji.
+       */
+      function triggerRemoteMoodReaction(emojiSymbol) {
+        // Natural organic drift across the visual canvas
+        const randomOriginX = 25 + Math.random() * 50;
+        spawnFloatingEmoji(emojiSymbol, randomOriginX);
+        setTimeout(() => spawnFloatingEmoji(emojiSymbol, randomOriginX + (Math.random() * 14 - 7)), 160);
+        setTimeout(() => spawnFloatingEmoji(emojiSymbol, randomOriginX + (Math.random() * 18 - 9)), 320);
+        say(`Another listener sent a ${emojiSymbol} vibe ✨`);
+      }
+
+      // ========================================================================
+      // MARK: - WebSocket Connection & Event Listener Lifecycle
+      // ========================================================================
+
+      let activeWebSocket = null;
+      let reconnectionAttemptTimer = null;
+      let reconnectionDelayMs = 2000;
+
+      function connectToVibesWebSocketServer() {
+        const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const wsEndpointUrl = `${wsProtocol}//${window.location.host}/ws/vibes`;
+
         try {
-          localStorage.setItem(VIBE_STORAGE_KEY, totalVibesSent.toString());
-        } catch (e) {}
+          activeWebSocket = new WebSocket(wsEndpointUrl);
 
-        updateVibeLabelDisplay();
+          activeWebSocket.onopen = () => {
+            reconnectionDelayMs = 2000; // Reset reconnection backoff on success
+          };
 
-        if (isLocalUser) {
-          // Burst of floating emojis for local user click
-          spawnFloatingEmoji(emojiSymbol, 50 + (Math.random() * 20 - 10));
-          setTimeout(() => spawnFloatingEmoji(emojiSymbol, 45 + (Math.random() * 30 - 15)), 200);
-          say(`You sent a cozy ${emojiSymbol} vibe! ✨`);
+          activeWebSocket.onmessage = (event) => {
+            try {
+              const broadcastData = JSON.parse(event.data);
+
+              if (broadcastData.type === 'vibe_broadcast') {
+                const eventId = broadcastData.id;
+
+                // Idempotency check: Guard against duplicate event processing
+                if (eventId && processedVibeEventIds.has(eventId)) {
+                  return;
+                }
+                if (eventId) {
+                  processedVibeEventIds.add(eventId);
+                  // Keep memory bounded
+                  if (processedVibeEventIds.size > 150) {
+                    const oldestEntry = processedVibeEventIds.values().next().value;
+                    processedVibeEventIds.delete(oldestEntry);
+                  }
+                }
+
+                // If sent by someone else, render the floating emoji on this user's screen!
+                if (broadcastData.senderId !== localClientUuid) {
+                  triggerRemoteMoodReaction(broadcastData.emoji || '✨');
+                }
+              }
+            } catch (jsonParseError) {
+              console.warn('Could not parse WebSocket incoming event:', jsonParseError);
+            }
+          };
+
+          activeWebSocket.onclose = () => {
+            scheduleWebSocketReconnection();
+          };
+
+          activeWebSocket.onerror = () => {
+            activeWebSocket && activeWebSocket.close();
+          };
+        } catch (connectionError) {
+          scheduleWebSocketReconnection();
+        }
+      }
+
+      function scheduleWebSocketReconnection() {
+        clearTimeout(reconnectionAttemptTimer);
+        reconnectionAttemptTimer = setTimeout(() => {
+          reconnectionDelayMs = Math.min(reconnectionDelayMs * 1.5, 20000);
+          connectToVibesWebSocketServer();
+        }, reconnectionDelayMs);
+      }
+
+      // Initialize the live connection
+      connectToVibesWebSocketServer();
+
+      /**
+       * Broadcasts a user's selected vibe to all connected listeners worldwide.
+       * @param {string} emojiSymbol - The chosen emoji.
+       * @param {number} horizontalOriginPercent - Button position for local FX.
+       */
+      function broadcastVibeToWorld(emojiSymbol, horizontalOriginPercent) {
+        // 1. Instant local optimistic feedback
+        triggerLocalMoodReaction(emojiSymbol, horizontalOriginPercent);
+
+        // 2. Transmit to server over WebSocket (or fallback to HTTP POST)
+        if (activeWebSocket && activeWebSocket.readyState === WebSocket.OPEN) {
+          activeWebSocket.send(
+            JSON.stringify({
+              type: 'send_vibe',
+              emoji: emojiSymbol,
+              senderId: localClientUuid,
+              timestamp: Date.now(),
+            })
+          );
         } else {
-          // Single floating emoji for ambient remote listener
-          spawnFloatingEmoji(emojiSymbol);
+          // HTTP REST fallback in case WebSocket is temporarily reconnecting
+          fetch('/api/vibes', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              emoji: emojiSymbol,
+              senderId: localClientUuid,
+            }),
+          }).catch(() => {});
         }
       }
 
@@ -682,36 +799,25 @@
         button.addEventListener('click', (event) => {
           event.stopPropagation();
           const emojiSymbol = button.getAttribute('data-emoji') || '☕';
-          sendGoodVibe(emojiSymbol, true);
+          const buttonRect = button.getBoundingClientRect();
+          const horizontalPercent = ((buttonRect.left + buttonRect.width / 2) / window.innerWidth) * 100;
+          broadcastVibeToWorld(emojiSymbol, horizontalPercent);
         });
       });
 
-      // Bind overall pill click to default vibe
-      const vibePill = $('vibe-pill');
-      if (vibePill) {
-        vibePill.addEventListener('click', () => {
-          sendGoodVibe('✨', true);
+      // Bind click on the "Send vibes" label to send a random cozy vibe
+      const vibeLabel = $('vibe-label');
+      if (vibeLabel) {
+        vibeLabel.addEventListener('click', () => {
+          const cozyVibeList = ['☕', '✨', '🎧', '💻', '❤️', '🌧️'];
+          const randomVibe = cozyVibeList[Math.floor(Math.random() * cozyVibeList.length)];
+          const labelRect = vibeLabel.getBoundingClientRect();
+          const horizontalPercent = ((labelRect.left + labelRect.width / 2) / window.innerWidth) * 100;
+          broadcastVibeToWorld(randomVibe, horizontalPercent);
         });
       }
-
-      // Initial label setup
-      updateVibeLabelDisplay();
-
-      // Ambient co-presence simulation: occasional cozy vibes from worldwide listeners
-      const ambientVibeEmojis = ['☕', '✨', '🎧', '❤️', '🌧️', '💻'];
-      const ambientListenerCities = ['Tokyo', 'London', 'Seattle', 'Berlin', 'Seoul', 'Toronto', 'Paris', 'Austin'];
-
-      setInterval(() => {
-        if (Math.random() > 0.35) {
-          const randomEmoji = ambientVibeEmojis[Math.floor(Math.random() * ambientVibeEmojis.length)];
-          const randomCity = ambientListenerCities[Math.floor(Math.random() * ambientListenerCities.length)];
-          sendGoodVibe(randomEmoji, false);
-          if (Math.random() > 0.6) {
-            say(`A listener in ${randomCity} sent a cozy ${randomEmoji} vibe`);
-          }
-        }
-      }, 18000);
     })();
+
 
     // ==========================================================================
     // MARK: - Procedural Web Audio Lo-Fi Synthesizer (Sandbox Safe)

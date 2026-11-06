@@ -7,7 +7,7 @@ import React from 'react';
 import { ExternalLink } from 'lucide-react';
 
 // ============================================================================
-// MARK: - Constants & Asset Configuration
+// MARK: - Constants & Configuration
 // ============================================================================
 
 /**
@@ -54,3 +54,4 @@ export default function App(): React.JSX.Element {
     </div>
   );
 }
+
